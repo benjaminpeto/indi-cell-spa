@@ -1,19 +1,15 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from "react-router-dom";
+
+import { Header } from "./header";
 
 export function AppLayout() {
   return (
     <div>
-      <header>
-        <h1>
-          <Link to="/">Indi Cell Store</Link>
-        </h1>
+      <Header />
 
-        <nav>
-          <Link to="/">Home</Link>
-        </nav>
-      </header>
-
-      <Outlet />
+      <main className="mx-auto max-w-6xl px-4 py-6">
+        <Outlet />
+      </main>
     </div>
   );
 }
