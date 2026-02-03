@@ -4,12 +4,20 @@ Single Page Application for browsing mobile devices and adding a selected varian
 
 ## Table of Contents
 
-- [Tech Stack](#tech-stack)
-- [Requirements](#requirements)
-- [API](#api)
-- [Getting Started](#getting-started)
-- [Code Quality](#code-quality)
-- [Project Status](#project-status)
+- [Indi Cell SPA](#indi-cell-spa)
+  - [Table of Contents](#table-of-contents)
+  - [Tech Stack](#tech-stack)
+  - [Requirements](#requirements)
+  - [API](#api)
+  - [Getting Started](#getting-started)
+    - [Install](#install)
+    - [Run development server](#run-development-server)
+    - [Build](#build)
+    - [Test](#test)
+    - [Lint](#lint)
+    - [Format](#format)
+  - [Code Quality](#code-quality)
+  - [Project Status](#project-status)
 
 ## Tech Stack
 
@@ -96,3 +104,4 @@ Tailwind classnames are automatically sorted using `prettier-plugin-tailwindcss`
 ## Project Status
 
 ✅ **Milestone 0** - Initial scaffolding + tooling
+✅ **Milestone 1** - App Shell with client-side routing and global layout with header and breadcrumbs

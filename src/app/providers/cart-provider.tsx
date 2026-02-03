@@ -1,10 +1,4 @@
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, type ReactNode, useContext, useMemo, useState } from 'react';
 
 type CartContextValue = {
   count: number;
@@ -24,7 +18,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 export function useCart() {
   const ctx = useContext(CartContext);
   if (!ctx) {
-    throw new Error("useCart must be used within CartProvider");
+    throw new Error('useCart must be used within CartProvider');
   }
   return ctx;
 }

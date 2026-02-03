@@ -1,12 +1,8 @@
 export function ProductListPage() {
   return (
-    <main>
-      <h2>Product List</h2>
-      <ul>
-        <li>Product 1</li>
-        <li>Product 2</li>
-        <li>Product 3</li>
-      </ul>
-    </main>
+    <section className="space-y-2">
+      <h1 className="text-xl font-semibold">Product List</h1>
+      <p className="text-neutral-600">PLP placeholder</p>
+    </section>
   );
 }
