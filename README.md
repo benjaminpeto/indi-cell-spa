@@ -18,6 +18,9 @@ Single Page Application for browsing mobile devices and adding a selected varian
     - [Format](#format)
   - [Code Quality](#code-quality)
   - [Project Status](#project-status)
+    - [Milestone 0 (Initial scaffolding + tooling)](#milestone-0-initial-scaffolding--tooling)
+    - [Milestone 1 (App Shell)](#milestone-1-app-shell)
+    - [Milestone 2 (Data layer + caching)](#milestone-2-data-layer--caching)
 
 ## Tech Stack
 
@@ -103,5 +106,25 @@ Tailwind classnames are automatically sorted using `prettier-plugin-tailwindcss`
 
 ## Project Status
 
-✅ **Milestone 0** - Initial scaffolding + tooling
-✅ **Milestone 1** - App Shell with client-side routing and global layout with header and breadcrumbs
+### Milestone 0 (Initial scaffolding + tooling)
+
+### Milestone 1 (App Shell)
+- Client-side routing:
+  - `/` Product List (placeholder)
+  - `/product/:id` Product Details (placeholder)
+  - `*` Not Found
+- Global layout with header:
+  - Title link to Home
+  - Breadcrumbs (Home / Product placeholder on PDP)
+  - Cart count placeholder (0)
+
+### Milestone 2 (Data layer + caching)
+- Added a typed API client for:
+  - `GET /api/product`
+  - `GET /api/product/:id`
+  - `POST /api/cart`
+- API detail shape includes variant options under `options.colors` and `options.storages`.
+- Implemented client-side caching using `localStorage` with a **1-hour TTL**:
+  - `products:list`
+  - `products:detail:{id}`
+- React Query is used for request lifecycle (loading/error) with defaults aligned to the 1-hour caching window.
