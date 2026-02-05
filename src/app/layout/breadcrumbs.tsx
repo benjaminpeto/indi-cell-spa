@@ -1,36 +1,35 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useMatch } from 'react-router-dom';
 
-type Crumb = { label: string; to?: string };
+import { useProductDetailsQuery } from '../../api/product-queries';
 
 export function Breadcrumbs() {
-  const { pathname } = useLocation();
+  const match = useMatch('/product/:id');
+  const id = match?.params?.id;
 
-  const crumbs: Crumb[] = [{ label: 'Home', to: '/' }];
+  const { data } = useProductDetailsQuery(id);
 
-  if (pathname.startsWith('/product/')) {
-    crumbs.push({ label: 'Product' }); // placeholder.. later use brand/model
-  }
+  const productLabel = data ? `${data.brand} ${data.model}` : 'Product';
+  const onProduct = Boolean(id);
 
   return (
     <nav aria-label="Breadcrumb" className="text-sm text-neutral-600">
       <ol className="flex items-center gap-2">
-        {crumbs.map((crumb, index) => {
-          const isLast = index === crumbs.length - 1;
-          return (
-            <li key={`${crumb.label}-${index}`} className="flex items-center gap-2">
-              {crumb.to && !isLast ? (
-                <Link to={crumb.to} className="hover:text-neutral-900 hover:underline">
-                  {crumb.label}
-                </Link>
-              ) : (
-                <span aria-current={isLast ? 'page' : undefined} className="text-neutral-800">
-                  {crumb.label}
-                </span>
-              )}
-              {!isLast && <span aria-hidden="true">/</span>}
+        <li className="flex items-center gap-2">
+          <Link to="/" className="hover:text-neutral-900 hover:underline">
+            Home
+          </Link>
+        </li>
+
+        {onProduct ? (
+          <>
+            <li aria-hidden="true">/</li>
+            <li>
+              <span aria-current="page" className="text-neutral-800">
+                {productLabel}
+              </span>
             </li>
-          );
-        })}
+          </>
+        ) : null}
       </ol>
     </nav>
   );
