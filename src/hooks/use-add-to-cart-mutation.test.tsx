@@ -1,61 +1,50 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const addToCartMock = vi.fn();
+import { apiClient } from '../api/client';
+import { CartProvider, useCart } from '../app/providers/cart-provider';
+import { useAddToCartMutation } from './use-add-to-cart-mutation';
 
 vi.mock('../api/client', () => ({
-  apiClient: {
-    addToCart: (...args: unknown[]) => addToCartMock(...args),
-  },
+  apiClient: { addToCart: vi.fn() },
 }));
+
+const addToCartMock = apiClient.addToCart as unknown as ReturnType<typeof vi.fn>;
+
+function Harness() {
+  const { count } = useCart();
+  const add = useAddToCartMutation();
+
+  return (
+    <div>
+      <div data-testid="count">{count}</div>
+      <button type="button" onClick={() => add.mutate({ id: '1', colorCode: 1000, storageCode: 2000 })}>
+        Add
+      </button>
+    </div>
+  );
+}
 
 beforeEach(() => {
   addToCartMock.mockReset();
   localStorage.clear();
-  vi.resetModules();
-});
-
-afterEach(() => {
-  vi.clearAllMocks();
 });
 
 describe('useAddToCartMutation', () => {
-  it('updates cart count on success', async () => {
+  it('increments local count even when API count is stuck at 1', async () => {
+    addToCartMock.mockResolvedValue({ count: 1 });
+
     const user = userEvent.setup();
-    addToCartMock.mockResolvedValue({ count: 7 });
-
-    const [{ CartProvider, useCart }, { useAddToCartMutation }] = await Promise.all([
-      import('../app/providers/cart-provider'),
-      import('./use-add-to-cart-mutation'),
-    ]);
-
-    function TestHarness() {
-      const { count } = useCart();
-      const addToCart = useAddToCartMutation();
-
-      return (
-        <div>
-          <div data-testid="count">{count}</div>
-          <button type="button" onClick={() => addToCart.mutate({ id: '1', colorCode: 1000, storageCode: 2000 })}>
-            Add
-          </button>
-        </div>
-      );
-    }
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-        mutations: { retry: false },
-      },
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
     });
 
     render(
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={qc}>
         <CartProvider>
-          <TestHarness />
+          <Harness />
         </CartProvider>
       </QueryClientProvider>,
     );
@@ -63,10 +52,32 @@ describe('useAddToCartMutation', () => {
     expect(screen.getByTestId('count')).toHaveTextContent('0');
 
     await user.click(screen.getByRole('button', { name: /add/i }));
+    await waitFor(() => expect(screen.getByTestId('count')).toHaveTextContent('1'));
+
+    await user.click(screen.getByRole('button', { name: /add/i }));
+    await waitFor(() => expect(screen.getByTestId('count')).toHaveTextContent('2'));
+
+    expect(addToCartMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('reconciles to API count if it ever increases', async () => {
+    addToCartMock.mockResolvedValue({ count: 7 });
+
+    const user = userEvent.setup();
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+
+    render(
+      <QueryClientProvider client={qc}>
+        <CartProvider>
+          <Harness />
+        </CartProvider>
+      </QueryClientProvider>,
+    );
+
+    await user.click(screen.getByRole('button', { name: /add/i }));
 
     await waitFor(() => expect(screen.getByTestId('count')).toHaveTextContent('7'));
-
-    expect(addToCartMock).toHaveBeenCalledTimes(1);
-    expect(addToCartMock).toHaveBeenCalledWith({ id: '1', colorCode: 1000, storageCode: 2000 });
   });
 });

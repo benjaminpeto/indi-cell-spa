@@ -10,7 +10,12 @@ export function useAddToCartMutation() {
   return useMutation<AddToCartResponse, Error, AddToCartRequest>({
     mutationFn: payload => apiClient.addToCart(payload),
     onSuccess: data => {
-      setCount(data.count);
+      const apiCount = Number(data.count);
+
+      setCount(prev => {
+        const nextLocal = prev + 1;
+        return apiCount === null ? nextLocal : Math.max(nextLocal, apiCount);
+      });
     },
   });
 }
