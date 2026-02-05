@@ -17,6 +17,7 @@ Single Page Application for browsing mobile devices and adding a selected varian
     - [Milestone 2 (Data layer + caching)](#milestone-2-data-layer--caching)
     - [Milestone 3 (PLP - Product List Base UI and Real Time Search)](#milestone-3-plp---product-list-base-ui-and-real-time-search)
     - [Milestone 4 (PDP + Product Details Base UI and Add to cart)](#milestone-4-pdp--product-details-base-ui-and-add-to-cart)
+    - [Milestone 5 (Cart count persistence \[global + client-side\])](#milestone-5-cart-count-persistence-global--client-side)
 
 ## Tech Stack
 
@@ -108,14 +109,18 @@ npm run format
 - React Query is used for request lifecycle (loading/error) with defaults aligned to the 1-hour caching window
 
 ### Milestone 3 (PLP - Product List Base UI and Real Time Search)
-
 - Product List page now renders a responsive grid of product cards (image, brand/model, price)
 - Added a real-time search input that filters by **brand** and **model** (case-insensitive)
 - Includes loading / error / empty states
 
 ### Milestone 4 (PDP + Product Details Base UI and Add to cart)
-
 - Product Details page renders a real layout with image, title, price and basic specs
 - Variant selectors are driven by API `options.colors` and `options.storages`
 - Add to cart sends `{ id, colorCode, storageCode }` and updates the header cart count from API `{ count }`
 - Breadcrumbs on PDP show `Home / {brand model}` once the product loads (fallback `Home / Product`)
+
+### Milestone 5 (Cart count persistence [global + client-side])
+- Holds `cartCount`
+- Initialises from localStorage (default 0)
+- Persists on change
+- Mutation success updates context + storage
