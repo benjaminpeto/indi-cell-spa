@@ -10,17 +10,12 @@ Single Page Application for browsing mobile devices and adding a selected varian
   - [Requirements](#requirements)
   - [API](#api)
   - [Getting Started](#getting-started)
-    - [Install](#install)
-    - [Run development server](#run-development-server)
-    - [Build](#build)
-    - [Test](#test)
-    - [Lint](#lint)
-    - [Format](#format)
   - [Code Quality](#code-quality)
   - [Project Status](#project-status)
     - [Milestone 0 (Initial scaffolding + tooling)](#milestone-0-initial-scaffolding--tooling)
     - [Milestone 1 (App Shell)](#milestone-1-app-shell)
     - [Milestone 2 (Data layer + caching)](#milestone-2-data-layer--caching)
+    - [Milestone 3 (PLP - Product List Base UI and Real Time Search)](#milestone-3-plp---product-list-base-ui-and-real-time-search)
 
 ## Tech Stack
 
@@ -60,39 +55,23 @@ Endpoints:
 
 ## Getting Started
 
-### Install
-
 ```bash
+### Install
 npm install
-```
 
 ### Run development server
-
-```bash
 npm run start
-```
 
 ### Build
-
-```bash
 npm run build
-```
 
 ### Test
-
-```bash
 npm run test
-```
 
 ### Lint
-
-```bash
 npm run lint
-```
 
 ### Format
-
-```bash
 npm run format
 ```
 
@@ -101,8 +80,6 @@ npm run format
 - Pre-commit checks run automatically via Husky:
   - `npm run test`
   - `lint-staged` (ESLint fix + Prettier on staged files)
-
-Tailwind classnames are automatically sorted using `prettier-plugin-tailwindcss`.
 
 ## Project Status
 
@@ -123,8 +100,14 @@ Tailwind classnames are automatically sorted using `prettier-plugin-tailwindcss`
   - `GET /api/product`
   - `GET /api/product/:id`
   - `POST /api/cart`
-- API detail shape includes variant options under `options.colors` and `options.storages`.
+- API detail shape includes variant options under `options.colors` and `options.storages`
 - Implemented client-side caching using `localStorage` with a **1-hour TTL**:
   - `products:list`
   - `products:detail:{id}`
-- React Query is used for request lifecycle (loading/error) with defaults aligned to the 1-hour caching window.
+- React Query is used for request lifecycle (loading/error) with defaults aligned to the 1-hour caching window
+
+### Milestone 3 (PLP - Product List Base UI and Real Time Search)
+
+- Product List page now renders a responsive grid of product cards (image, brand/model, price).
+- Added a real-time search input that filters by **brand** and **model** (case-insensitive).
+- Includes loading / error / empty states.
