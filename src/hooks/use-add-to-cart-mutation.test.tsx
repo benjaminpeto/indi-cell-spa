@@ -4,7 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { apiClient } from '../api/client';
-import { CART_COUNT_STORAGE_KEY, CartProvider, useCart } from '../app/providers/cart-provider';
+import { CartProvider, useCart } from '../app/providers/cart-provider';
+import { CART_COUNT_STORAGE_KEY } from '../app/providers/cart-provider.constants';
 import { useAddToCartMutation } from './use-add-to-cart-mutation';
 
 vi.mock('../api/client', () => ({
