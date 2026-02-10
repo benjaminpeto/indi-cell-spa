@@ -3,13 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 
 import { useProductDetailsQuery } from '../../api/product-queries';
 import { useAddToCartMutation } from '../../hooks/use-add-to-cart-mutation';
-import { formatMaybeArray, formatWeight } from '../../shared/utils/format-reponse';
+import { buildSpecs, getSelectedOptionCode } from './utils/product-details';
 
 export function ProductDetailsPage() {
   const { id } = useParams();
   const { data, isLoading, isError, error } = useProductDetailsQuery(id);
   const addToCart = useAddToCartMutation();
-  // TODO: create custom hook to seperate logic
 
   const [selectedColorCode, setSelectedColorCode] = useState<number | null>(null);
   const [selectedStorageCode, setSelectedStorageCode] = useState<number | null>(null);
@@ -17,14 +16,15 @@ export function ProductDetailsPage() {
   const colorOptions = useMemo(() => data?.options?.colors ?? [], [data]);
   const storageOptions = useMemo(() => data?.options?.storages ?? [], [data]);
 
-  const colorCode = selectedColorCode ?? colorOptions[0]?.code ?? null;
-  const storageCode = selectedStorageCode ?? storageOptions[0]?.code ?? null;
+  const colorCode = getSelectedOptionCode(selectedColorCode, colorOptions);
+  const storageCode = getSelectedOptionCode(selectedStorageCode, storageOptions);
 
   if (isLoading) return <p>Loading product...</p>;
   if (isError) return <p>Failed to load product: {(error as Error).message}</p>;
   if (!data) return <p>Product not found.</p>;
 
   const title = `${data.brand} ${data.model}`;
+  const specs = buildSpecs(data);
 
   const canAdd =
     Boolean(id) &&
@@ -34,32 +34,11 @@ export function ProductDetailsPage() {
     colorOptions.length > 0 &&
     storageOptions.length > 0;
 
-  const screenResolution = data.displaySize?.trim() || null; // e.g. "720 x 1280 pixels ..."
-  const screenSize = data.displayResolution?.trim() || null; // e.g. "7.0 inches ..."
-  const cameras = [formatMaybeArray(data.primaryCamera), formatMaybeArray(data.secondaryCmera)]
-    .filter(Boolean)
-    .join(' / ');
-
-  const specs: Array<{ label: string; value: string | null }> = [
-    { label: 'Brand', value: data.brand?.trim() || null },
-    { label: 'Model', value: data.model?.trim() || null },
-    { label: 'CPU', value: data.cpu?.trim() || null },
-    { label: 'RAM', value: data.ram?.trim() || null },
-    { label: 'Operating System', value: data.os?.trim() || null },
-    { label: 'Screen resolution', value: screenResolution },
-    { label: 'Screen size', value: screenSize },
-    { label: 'Battery', value: data.battery?.trim() || null },
-    { label: 'Cameras', value: cameras || null },
-    { label: 'Dimensions', value: data.dimentions?.trim() || null },
-    { label: 'Weight', value: formatWeight(data.weight) },
-  ].filter(row => row.value !== null);
-
   return (
     <section className="space-y-6">
       <Link className="text-sm hover:underline" to="/">
         ← Back to list
       </Link>
-      {/* TODO: extract to separate components and use skeletons for loading state */}
       <div className="grid gap-6 md:grid-cols-2">
         <div className="overflow-hidden rounded-2xl bg-neutral-50">
           <img src={data.imgUrl} alt={title} className="h-full w-full object-cover" />

@@ -1,16 +1,18 @@
 import { useMemo, useState } from 'react';
 
 import { useProductsQuery } from '../../api/product-queries';
-import { ProductCard } from './components/product-card';
+import { ProductListContent } from './components/product-list-content';
 import { filterProducts } from './filter-products';
 
 export function ProductListPage() {
   const { data, isLoading, isError, error } = useProductsQuery();
   const [query, setQuery] = useState('');
 
-  const filtered = useMemo(() => filterProducts(data ?? [], query), [data, query]);
+  const products = useMemo(() => data ?? [], [data]);
+  const filtered = useMemo(() => filterProducts(products, query), [products, query]);
+  const hasProducts = products.length > 0;
+  const showSummary = !isLoading && !isError && hasProducts;
 
-  // TODO: refactor to use useReducer or something for the various loading/error states instead of 10+ conditionals in the JSX :D LOL
   return (
     <section className="space-y-4">
       <header className="space-y-2">
@@ -41,29 +43,21 @@ export function ProductListPage() {
           ) : null}
         </div>
 
-        {!isLoading && !isError && data?.length ? (
+        {showSummary ? (
           <p className="text-sm text-neutral-600">
             Showing <span className="font-medium text-neutral-900">{filtered.length}</span> of{' '}
-            <span className="font-medium text-neutral-900">{data.length}</span>
+            <span className="font-medium text-neutral-900">{products.length}</span>
           </p>
         ) : null}
       </header>
 
-      {isLoading && <p>Loading products...</p>}
-
-      {isError && <p>Failed to load products: {(error as Error).message}</p>}
-
-      {!isLoading && !isError && (!data || data.length === 0) && <p>No products found.</p>}
-
-      {!isLoading && !isError && data && data.length > 0 && filtered.length === 0 && <p>No matching products.</p>}
-
-      {!isLoading && !isError && filtered.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {filtered.map(p => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      )}
+      <ProductListContent
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        products={products}
+        filteredProducts={filtered}
+      />
     </section>
   );
 }

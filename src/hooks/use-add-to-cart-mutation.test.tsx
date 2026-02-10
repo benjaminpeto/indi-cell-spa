@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { apiClient } from '../api/client';
-import { CartProvider, useCart } from '../app/providers/cart-provider';
+import { CART_COUNT_STORAGE_KEY, CartProvider, useCart } from '../app/providers/cart-provider';
 import { useAddToCartMutation } from './use-add-to-cart-mutation';
 
 vi.mock('../api/client', () => ({
@@ -29,7 +29,9 @@ function Harness() {
 
 beforeEach(() => {
   addToCartMock.mockReset();
-  localStorage.clear();
+  if (typeof localStorage?.setItem === 'function') {
+    localStorage.setItem(CART_COUNT_STORAGE_KEY, '0');
+  }
 });
 
 describe('useAddToCartMutation', () => {
@@ -79,5 +81,27 @@ describe('useAddToCartMutation', () => {
     await user.click(screen.getByRole('button', { name: /add/i }));
 
     await waitFor(() => expect(screen.getByTestId('count')).toHaveTextContent('7'));
+  });
+
+  it('falls back to local increment when API count is invalid', async () => {
+    addToCartMock.mockResolvedValue({ count: 'not-a-number' });
+
+    const user = userEvent.setup();
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+
+    render(
+      <QueryClientProvider client={qc}>
+        <CartProvider>
+          <Harness />
+        </CartProvider>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByTestId('count')).toHaveTextContent('0');
+
+    await user.click(screen.getByRole('button', { name: /add/i }));
+    await waitFor(() => expect(screen.getByTestId('count')).toHaveTextContent('1'));
   });
 });
