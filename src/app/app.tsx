@@ -20,7 +20,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        <BrowserRouter basename="/indi-cell-spa">
+        <BrowserRouter basename="/">
           <AppRoutes />
         </BrowserRouter>
       </CartProvider>
