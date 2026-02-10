@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import App from './app';
-import { CART_COUNT_STORAGE_KEY } from './providers/cart-provider';
+import { CART_COUNT_STORAGE_KEY, CART_ITEMS_STORAGE_KEY } from './providers/cart-provider.constants';
 
 const useProductsQueryMock = vi.fn();
 const useProductDetailsQueryMock = vi.fn();
@@ -27,6 +27,7 @@ describe('App routing', () => {
     addToCartMock.mockResolvedValue({ count: 3 });
     if (typeof localStorage?.setItem === 'function') {
       localStorage.setItem(CART_COUNT_STORAGE_KEY, '0');
+      localStorage.setItem(CART_ITEMS_STORAGE_KEY, '[]');
     }
 
     useProductsQueryMock.mockReturnValue({
@@ -103,5 +104,15 @@ describe('App routing', () => {
     await user.click(screen.getByRole('link', { name: /view acer iconia talk s/i }));
     expect(screen.getByRole('heading', { name: /acer iconia talk s/i })).toBeInTheDocument();
     expect(screen.getByText(/cart:/i)).toHaveTextContent('Cart: 3');
+  });
+
+  it('navigates to checkout from cart counter link', async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(screen.getByRole('link', { name: /open checkout cart/i }));
+
+    expect(screen.getByRole('heading', { name: /checkout/i })).toBeInTheDocument();
   });
 });

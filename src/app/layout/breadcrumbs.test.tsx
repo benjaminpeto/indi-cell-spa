@@ -53,4 +53,12 @@ describe('Breadcrumbs', () => {
 
     expect(screen.getByText('Product')).toBeInTheDocument();
   });
+
+  it('renders Checkout label on checkout route', async () => {
+    useProductDetailsQueryMock.mockReturnValue({ data: undefined });
+
+    await renderBreadcrumbs('/checkout');
+
+    expect(screen.getByText('Checkout')).toBeInTheDocument();
+  });
 });

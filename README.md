@@ -18,6 +18,7 @@ Single Page Application for browsing mobile devices and adding a selected varian
     - [Milestone 3 (PLP - Product List Base UI and Real Time Search)](#milestone-3-plp---product-list-base-ui-and-real-time-search)
     - [Milestone 4 (PDP + Product Details Base UI and Add to cart)](#milestone-4-pdp--product-details-base-ui-and-add-to-cart)
     - [Milestone 5 (Cart count persistence \[global + client-side\])](#milestone-5-cart-count-persistence-global--client-side)
+    - [Milestone 6 (Checkout Page + Cart Line Items)](#milestone-6-checkout-page--cart-line-items)
 
 ## Tech Stack
 
@@ -35,6 +36,8 @@ Single Page Application for browsing mobile devices and adding a selected varian
 - Two views:
   - Product List (PLP)
   - Product Details (PDP)
+- Extra route:
+  - Checkout (`/checkout`)
 - Client-side routing
 - Real-time search filter by **brand** and **model**
 - Add to cart sends: `id`, `colorCode`, `storageCode`
@@ -124,3 +127,10 @@ npm run format
 - Initialises from localStorage (default 0)
 - Persists on change
 - Mutation success updates context + storage
+
+### Milestone 6 (Checkout Page + Cart Line Items)
+- Added route `/checkout`
+- Header cart counter is now a link to checkout
+- Cart persists line items in localStorage and keeps cart count persistent
+- Same product + color + storage combination is merged into one line with quantity
+- Checkout page shows per-line totals, cart total, and supports removing a line item

@@ -16,12 +16,16 @@ export function Header() {
           Indi Cell Store
         </Link>
 
-        <div className="neo-panel bg-paper inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold">
+        <Link
+          to="/checkout"
+          className="neo-panel bg-paper inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold transition-transform duration-200 hover:-translate-y-0.5"
+          aria-label="Open checkout cart"
+        >
           <ShoppingCart className="h-5 w-5" aria-hidden="true" />
           <span>
             Cart: <span className="font-extrabold">{count}</span>
           </span>
-        </div>
+        </Link>
       </div>
     </header>
   );

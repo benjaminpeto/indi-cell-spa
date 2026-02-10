@@ -4,12 +4,14 @@ import { useProductDetailsQuery } from '../../api/product-queries';
 
 export function Breadcrumbs() {
   const match = useMatch('/product/:id');
+  const checkoutMatch = useMatch('/checkout');
   const id = match?.params?.id;
 
   const { data } = useProductDetailsQuery(id);
 
   const productLabel = data ? `${data.brand} ${data.model}` : 'Product';
   const onProduct = Boolean(id);
+  const onCheckout = Boolean(checkoutMatch);
 
   return (
     <nav aria-label="Breadcrumb" className="neo-panel bg-paper px-3 py-2 text-sm sm:px-4">
@@ -28,6 +30,19 @@ export function Breadcrumbs() {
             <li>
               <span aria-current="page" className="text-ink font-extrabold">
                 {productLabel}
+              </span>
+            </li>
+          </>
+        ) : null}
+
+        {onCheckout ? (
+          <>
+            <li aria-hidden="true" className="font-semibold">
+              /
+            </li>
+            <li>
+              <span aria-current="page" className="text-ink font-extrabold">
+                Checkout
               </span>
             </li>
           </>
