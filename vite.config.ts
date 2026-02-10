@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/',
+  base: '/indi-cell-spa/',
   plugins: [react(), tailwindcss()],
   test: {
     globals: true,
