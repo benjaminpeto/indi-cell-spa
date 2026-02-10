@@ -9,23 +9,25 @@ export function ProductCard({ product }: { product: ApiProductListItem }) {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="group block overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
+      className="neo-panel group bg-paper motion-safe:animate-enter-pop block overflow-hidden transition-all duration-200 hover:-translate-y-1 focus-visible:-translate-y-1"
       aria-label={`View ${title}`}
     >
-      <div className="aspect-4/3 w-full overflow-hidden bg-neutral-50">
+      <div className="border-ink aspect-4/3 max-h-[240px] w-full overflow-hidden border-b-[3px] bg-white sm:max-h-[280px]">
         <img
           src={product.imgUrl}
           alt={title}
-          className="h-full w-full object-cover transition group-hover:scale-[1.02]"
+          className="h-full w-full object-contain transition duration-300 group-hover:scale-[1.04]"
           loading="lazy"
+          decoding="async"
+          sizes="(max-width: 639px) 92vw, (max-width: 1535px) 30vw, 22vw"
         />
       </div>
 
-      <div className="space-y-1 p-4">
-        <p className="text-sm text-neutral-600">{product.brand}</p>
-        <h2 className="leading-snug font-medium">{product.model}</h2>
-        <p className="text-sm font-semibold">{priceLabel}</p>
-      </div>
+      <article className="space-y-1.5 p-4">
+        <p className="text-xs font-bold tracking-[0.12em] uppercase">{product.brand}</p>
+        <h2 className="font-body text-base leading-snug font-extrabold">{product.model}</h2>
+        <p className="border-ink bg-sun inline-block border-2 px-2 py-0.5 text-sm font-extrabold">{priceLabel}</p>
+      </article>
     </Link>
   );
 }

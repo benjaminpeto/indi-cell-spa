@@ -26,29 +26,33 @@ export function ProductListContent({
   hasIntersectionObserver,
   onLoadMore,
 }: ProductListContentProps) {
-  if (isLoading) return <p>Loading products...</p>;
-  if (isError) return <p>Failed to load products: {(error as Error).message}</p>;
-  if (products.length === 0) return <p>No products found.</p>;
-  if (filteredProducts.length === 0) return <p>No matching products.</p>;
+  if (isLoading) return <p className="neo-panel p-4 text-sm font-semibold">Loading products...</p>;
+  if (isError)
+    return (
+      <p className="neo-panel bg-clay/20 p-4 text-sm font-semibold">
+        Failed to load products: {(error as Error).message}
+      </p>
+    );
+  if (products.length === 0) return <p className="neo-panel p-4 text-sm font-semibold">No products found.</p>;
+  if (filteredProducts.length === 0)
+    return <p className="neo-panel p-4 text-sm font-semibold">No matching products.</p>;
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredProducts.map(product => (
-          <ProductCard key={product.id} product={product} />
+          <li key={product.id}>
+            <ProductCard product={product} />
+          </li>
         ))}
-      </div>
+      </ul>
 
       {hasMore ? (
         hasIntersectionObserver ? (
-          <div ref={sentinelRef} aria-label="Load more products trigger" className="h-4" />
+          <div ref={sentinelRef} aria-label="Load more products trigger" className="h-5" />
         ) : (
           <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={onLoadMore}
-              className="rounded-xl border px-4 py-2 text-sm hover:bg-neutral-50"
-            >
+            <button type="button" onClick={onLoadMore} className="neo-button px-4 py-2 text-sm uppercase">
               Load more
             </button>
           </div>

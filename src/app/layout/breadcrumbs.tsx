@@ -12,19 +12,21 @@ export function Breadcrumbs() {
   const onProduct = Boolean(id);
 
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-neutral-600">
-      <ol className="flex items-center gap-2">
+    <nav aria-label="Breadcrumb" className="neo-panel bg-paper px-3 py-2 text-sm sm:px-4">
+      <ol className="text-ink/80 flex flex-wrap items-center gap-2">
         <li className="flex items-center gap-2">
-          <Link to="/" className="hover:text-neutral-900 hover:underline">
+          <Link to="/" className="font-semibold underline-offset-2 hover:underline">
             Home
           </Link>
         </li>
 
         {onProduct ? (
           <>
-            <li aria-hidden="true">/</li>
+            <li aria-hidden="true" className="font-semibold">
+              /
+            </li>
             <li>
-              <span aria-current="page" className="text-neutral-800">
+              <span aria-current="page" className="text-ink font-extrabold">
                 {productLabel}
               </span>
             </li>

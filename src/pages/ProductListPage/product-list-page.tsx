@@ -16,13 +16,19 @@ export function ProductListPage() {
   const progressive = useProgressiveProducts(filtered, { initialVisibleCount: 12, revealStep: 6 });
 
   return (
-    <section className="space-y-4">
-      <header className="space-y-2">
-        <h1 className="text-xl font-semibold">Product List</h1>
+    <section aria-labelledby="product-list-title" className="space-y-5 py-5">
+      <header className="neo-panel bg-paper space-y-4 p-4 sm:p-5">
+        <h1 id="product-list-title" className="text-2xl leading-tight sm:text-3xl">
+          Product List
+        </h1>
 
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div className="w-full sm:max-w-md">
-            <label htmlFor="product-search" className="block text-sm font-medium">
+        <form
+          role="search"
+          className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+          onSubmit={e => e.preventDefault()}
+        >
+          <div className="w-full sm:max-w-lg">
+            <label htmlFor="product-search" className="mb-1.5 block text-sm font-bold tracking-wide uppercase">
               Search
             </label>
             <input
@@ -30,7 +36,7 @@ export function ProductListPage() {
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Search by brand or model..."
-              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
+              className="border-ink w-full border-[3px] bg-white px-3 py-2.5 text-base"
             />
           </div>
 
@@ -38,17 +44,17 @@ export function ProductListPage() {
             <button
               type="button"
               onClick={() => setQuery('')}
-              className="self-start rounded-xl border px-3 py-2 text-sm hover:bg-neutral-50"
+              className="neo-button self-start px-4 py-2 text-sm uppercase"
             >
               Clear
             </button>
           ) : null}
-        </div>
+        </form>
 
         {showSummary ? (
-          <p className="text-sm text-neutral-600">
-            Showing <span className="font-medium text-neutral-900">{filtered.length}</span> of{' '}
-            <span className="font-medium text-neutral-900">{products.length}</span>
+          <p aria-live="polite" className="text-sm font-semibold">
+            Showing <span className="font-extrabold">{filtered.length}</span> of{' '}
+            <span className="font-extrabold">{products.length}</span>
           </p>
         ) : null}
       </header>
