@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { useProductsQuery } from '../../api/product-queries';
 import { ProductListContent } from './components/product-list-content';
 import { filterProducts } from './filter-products';
+import { useProgressiveProducts } from './hooks/use-progressive-products';
 
 export function ProductListPage() {
   const { data, isLoading, isError, error } = useProductsQuery();
@@ -12,6 +13,7 @@ export function ProductListPage() {
   const filtered = useMemo(() => filterProducts(products, query), [products, query]);
   const hasProducts = products.length > 0;
   const showSummary = !isLoading && !isError && hasProducts;
+  const progressive = useProgressiveProducts(filtered, { initialVisibleCount: 12, revealStep: 6 });
 
   return (
     <section className="space-y-4">
@@ -56,7 +58,11 @@ export function ProductListPage() {
         isError={isError}
         error={error}
         products={products}
-        filteredProducts={filtered}
+        filteredProducts={progressive.visibleItems}
+        hasMore={progressive.hasMore}
+        sentinelRef={progressive.sentinelRef}
+        hasIntersectionObserver={progressive.hasIntersectionObserver}
+        onLoadMore={progressive.loadMore}
       />
     </section>
   );
