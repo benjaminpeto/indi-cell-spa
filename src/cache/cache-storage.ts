@@ -7,7 +7,11 @@ export function setCache<T>(key: string, value: T, ttlMs: number = ONE_HOUR_MS) 
     value,
     expiresAt: Date.now() + ttlMs,
   };
-  localStorage.setItem(key, JSON.stringify(record));
+  try {
+    localStorage.setItem(key, JSON.stringify(record));
+  } catch {
+    // ignore storage failures, app should still work without cache
+  }
 }
 
 export function getCache<T>(key: string): T | null {

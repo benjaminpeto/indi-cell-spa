@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 
 import { useProductDetailsQuery } from '../../api/product-queries';
 import { useAddToCartMutation } from '../../hooks/use-add-to-cart-mutation';
+import { formatMaybeArray, formatWeight } from '../../shared/utils/format-reponse';
 
 export function ProductDetailsPage() {
   const { id } = useParams();
@@ -33,6 +34,26 @@ export function ProductDetailsPage() {
     colorOptions.length > 0 &&
     storageOptions.length > 0;
 
+  const screenResolution = data.displaySize?.trim() || null; // e.g. "720 x 1280 pixels ..."
+  const screenSize = data.displayResolution?.trim() || null; // e.g. "7.0 inches ..."
+  const cameras = [formatMaybeArray(data.primaryCamera), formatMaybeArray(data.secondaryCmera)]
+    .filter(Boolean)
+    .join(' / ');
+
+  const specs: Array<{ label: string; value: string | null }> = [
+    { label: 'Brand', value: data.brand?.trim() || null },
+    { label: 'Model', value: data.model?.trim() || null },
+    { label: 'CPU', value: data.cpu?.trim() || null },
+    { label: 'RAM', value: data.ram?.trim() || null },
+    { label: 'Operating System', value: data.os?.trim() || null },
+    { label: 'Screen resolution', value: screenResolution },
+    { label: 'Screen size', value: screenSize },
+    { label: 'Battery', value: data.battery?.trim() || null },
+    { label: 'Cameras', value: cameras || null },
+    { label: 'Dimensions', value: data.dimentions?.trim() || null },
+    { label: 'Weight', value: formatWeight(data.weight) },
+  ].filter(row => row.value !== null);
+
   return (
     <section className="space-y-6">
       <Link className="text-sm hover:underline" to="/">
@@ -44,7 +65,7 @@ export function ProductDetailsPage() {
           <img src={data.imgUrl} alt={title} className="h-full w-full object-cover" />
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           <div>
             <h1 className="text-2xl font-semibold">{title}</h1>
             <p className="text-neutral-600">
@@ -110,10 +131,17 @@ export function ProductDetailsPage() {
             {addToCart.isPending ? 'Adding…' : 'Add to cart'}
           </button>
 
-          <div className="space-y-1 text-sm text-neutral-700">
-            {data.cpu ? <p>CPU: {data.cpu}</p> : null}
-            {data.ram ? <p>RAM: {data.ram}</p> : null}
-            {data.os ? <p>OS: {data.os}</p> : null}
+          <div className="rounded-2xl border p-4">
+            <h2 className="text-sm font-semibold text-neutral-900">Product details</h2>
+
+            <dl className="mt-3 grid gap-3 sm:grid-cols-2">
+              {specs.map(row => (
+                <div key={row.label} className="space-y-1">
+                  <dt className="text-xs font-medium text-neutral-600">{row.label}</dt>
+                  <dd className="text-sm text-neutral-900">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </div>
